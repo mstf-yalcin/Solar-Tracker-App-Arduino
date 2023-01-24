@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic2.starter",
-	"appName": "solar-tracker",
+	"appId": "com.may.solarcontroller",
+	"appName": "solar-tracker-controller",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }

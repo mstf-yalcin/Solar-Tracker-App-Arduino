@@ -1,0 +1,286 @@
+ 
+ion-content {
+    --background: #eee; 
+  }
+  
+  
+  
+  .base
+  {
+       width: 200px;
+       height: 200px;
+       border-radius: 50%;
+       background-color: #eee;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       box-shadow: inset -5px -10px 40px rgba(0, 0, 0, 0.05), 
+       inset 0px 0px 10px rgba(0, 0, 0, 0.3), 
+       inset 0px 0px 5px rgba(0, 0, 0, 0.5), 
+       inset 0px 0px 3px 1px rgba(0, 0, 0, 0.51),
+       0px 0px 10px rgba(0, 0, 0, 0.3);
+       position: relative;
+       margin-top: 150px;
+  }
+  
+  
+  .center
+  {
+   
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      background-color: #eee;
+      box-shadow: inset -5px -10px 40px rgba(0, 0, 0, 0.05),
+      inset 0px 0px 10px rgba(0, 0, 0, 0.3),
+      inset 0px 0px 5px rgba(0, 0, 0, 0.5),
+      inset 0px 0px 3px 1px rgba(0, 0, 0, 0.51),
+      0px 0px 10px rgba(0, 0, 0, 0.3);
+      position: relative;
+  
+  }
+  
+  
+  .shaft
+  {
+      background-color: #eee;
+      width: 75px;height: 75px;border-radius: 50%; 
+      box-shadow: inset 5px 5px 10px rgba(255, 255, 255, 0.3),
+        inset -5px -5px 10px rgba(0, 0, 0, 0.15),
+        0 2px 10px -5px rgba(0, 0, 0, 0.7),
+        0 4px 20px -10px rgba(0, 0, 0, 0.2),
+        -50px 0 40px -20px rgba(0, 0, 0, 0.2),
+        50px 50px 40px -20px rgba(0, 0, 0, 0.2);
+      position:absolute;
+      z-index:12;
+      transition-duration: 0.05s;
+  
+   
+  }
+  
+   
+  //nes gamepad shadow   https://codepen.io/fullkornslimpa/pen/kPxwOd
+  .nes
+  {
+    box-shadow:
+    .1em .1em 0 hsla(0, 0%, 100%, .5), /* border */
+    .075em .1em 0 hsla(0, 0%, 80%, 1), /* 3d */
+    .15em .2em 0 hsla(0, 0%, 78%, 1),
+    .225em .3em 0 hsla(0, 0%, 76%, 1),
+    .3em .4em 0 hsla(0, 0%, 74%, 1),
+    .375em .5em 0 .1em hsla(0, 0%, 72%, 1),
+    .425em .6em 0 .1em hsla(0, 0%, 70%, 1),
+    .5em .7em 0 .1em hsla(0, 0%, 68%, 1),
+    .575em .8em 0 .1em hsla(0, 0%, 66%, 1),
+    .65em .9em 0 .1em hsla(0, 0%, 64%, 1),
+    .725em 1em 0 .1em hsla(0, 0%, 62%, 1),
+    .775em 1.1em 0 .08em hsla(0, 0%, 40%, 1), /* back piece */
+    .800em 1.1em 0 .13em hsla(0, 0%, 60%, 1),
+    .875em 1.2em 0 .13em hsla(0, 0%, 58%, 1),
+    .950em 1.3em 0 .13em hsla(0, 0%, 56%, 1),
+    1.025em 1.4em 0 .13em hsla(0, 0%, 54%, 1),
+    1.1em 1.5em 0 .13em hsla(0, 0%, 52%, 1),
+    1.175em 1.6em 0 .13em hsla(0, 0%, 50%, 1),
+    0.4em 1.1em .5em hsla(0, 0%, 20%, .1), /* shadow */
+    0.8em 1.3em .6em hsla(0, 0%, 20%, .1),
+    1.2em 1.6em .7em hsla(0, 0%, 20%, .1),
+    1.6em 1.8em .8em hsla(0, 0%, 20%, .1),
+    2em 2em .9em hsla(0, 0%, 20%, .1),
+    2.4em 2.2em 1em hsla(0, 0%, 20%, .1),
+    2.8em 2.4em 1.1em hsla(0, 0%, 20%, .1),
+    3.2em 2.6em 1.2em hsla(0, 0%, 20%, .1),
+    3.6em 2.8em 1.3em hsla(0, 0%, 20%, .1),
+    4em 3em 1.4em hsla(0, 0%, 20%, .1); 
+    transform: rotate(180deg);
+    margin-left: 50px;
+    margin-top: 40px;
+    background-color: #DDD;
+    width: 80%;height: 95%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .nesBoard
+  {
+    width: 85%;height: 95%;background-color: rgba(0, 0, 0, 0.692);margin-right: 3%;display: flex;flex-direction: column-reverse;
+  }
+  .nesContainer{
+    width: 105%;height: 30%;display: flex;justify-content: center;align-items: center;flex-direction: column-reverse; 
+  }
+   .nesLeftButton
+   {
+    height: 100%;width: 50px;background-color: #252725;display: flex;justify-content: center;align-items: center;border-bottom:2px solid white;border-left:2px solid white;border-right:2px solid white;border-radius: 0 0 5px 5px;
+   }
+   .nesRightButton
+   {
+    height: 100%;width: 50px;background-color: #252725;display: flex;justify-content: center;align-items: center;border-top:2px solid white;border-left:2px solid white;border-right:2px solid white;border-radius: 5px 5px 0 0;
+   }
+   .nesUpButton
+   {
+    height: 100%;width: 50px;background-color: #252725;display: flex;justify-content: center;align-items: center;border-bottom:2px solid white;border-top:2px solid white;border-left:2px solid white;border-radius: 5px 0 0 5px;
+   }
+   .nesDownButton
+   {
+    height: 100%;width: 50px;background-color: #252725;display: flex;justify-content: center;align-items: center;border-bottom:2px solid white;border-right:2px solid white;border-top:2px solid white;border-radius: 0 5px 5px 0;
+   }
+   .nesButtonCircle
+   {
+    width: 24px;height: 24px;border-radius:100%;background-color:161616;   box-shadow: inset -2px -2px 15px rgba(255, 255, 255, 0.2),
+    inset 2px 2px 15px rgba(0, 0, 0, 1);   background: #161616;transform: rotate(180deg);
+   }
+   .nesDirection
+   {
+    width: 100%;height: 25%;display: flex;justify-content: center;align-items: center;;display: flex;justify-content: center;flex-direction: row;
+   }
+   .nesSettingsText
+   {
+    transform: rotate(270deg);color: #e60012;font-family: Montserrat, sans-serif;font-weight: bold;font-size: 14.5px;text-transform: uppercase;
+   }
+   .nesStartText
+   {
+    transform: rotate(270deg);color: #e60012;font-family: Montserrat, sans-serif;font-weight: bold;font-size: 14.5px;text-transform: uppercase;
+   }
+   .nesLabelContainer
+   {
+    height: 100%;width: 15%; display: flex;justify-content:space-evenly;align-items: center;flex-direction: column;background-color: #bbb;border-radius: 7px; 
+   }
+   .nesMidContainer
+   {
+    width: 18%;height: 100%;background-color: #DDD;  border: 5px solid #ddd;border-radius: 7px; box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.2);
+    display: flex;justify-content: center;flex-direction: column;align-items: center;
+   }
+   .nesButtonContainer
+   {
+    border-radius: 10px;width: 30%;height: 30%;background-color: #DDDD;margin-right: 15%; margin-right: 15%;display: flex;justify-content: center;align-items: center;
+   }
+  
+  .nes-button
+  {
+    transform: rotate(270deg);
+      width:50px;height: 50px;    
+      // width:60%;height: 60%;    
+  
+         background: #E0421B; /* fallack */
+        background: -webkit-radial-gradient(35% 35%, circle closest-corner, #ff8957, #E0421B 100%);
+        background: -moz-radial-gradient(35% 35%, circle closest-corner, #ff8957, #E0421B 100%);
+        background: radial-gradient(35% 35%, circle closest-corner, #ff8957, #E0421B 100%);
+        border-radius: 2em;
+        border: .08em solid hsla(10, 90%, 55%, 1);
+        box-shadow:
+          2em 1em 0.2em 0 hsla(10, 90%, 45%, .5) inset, /* reflection */
+          .04em .1em 0 hsla(10, 90%, 30%, 1), /* 3d */
+          .08em .2em 0 hsla(10, 90%, 26%, 1),
+          .12em .3em 0 hsla(10, 90%, 23%, 1),
+          .1em .24em 0 .15em hsla(0, 0%, 15%, 1), /* hole */
+          .1em .075em .5em rgba(0, 0, 0, .3), /* shadow */
+          .3em .15em .5em rgba(0, 0, 0, .3),
+          1.2em .6em .5em rgba(0, 0, 0, .3);
+          transition:cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+  
+  .nes-button:active
+  {
+  
+    box-shadow:
+    2em 1em 0.2em 0 hsla(10, 90%, 45%, .5) inset, /* reflection */
+    .05em .1em 0 hsla(10,90%,30%,1), /* 3d */
+    0 0 0 .15em hsla(0, 0%, 15%, 1), /* hole */
+    .1em .075em .5em rgba(0,0,0,.3); /* shadow */
+  }
+  
+  .select
+  {
+    height: 35%;width: 50%;
+    //  height: 25%;width: 40%;
+    
+    border-radius: 30px; box-shadow:
+        .04em .08em 0 hsla(0, 0%, 26%, 1), /* 3d */
+        .08em .15em 0 hsla(0, 0%, 23%, 1),
+        .12em .23em 0 hsla(0, 0%, 20%, 1),
+        .16em .3em 0 hsla(0, 0%, 17%, 1),
+        .16em .3em 0 .15em hsla(0, 0%, 0%, .9), /* hole */
+        .1em .075em .5em rgba(0, 0, 0, .3), /* shadow */
+        .3em .15em .5em rgba(0, 0, 0, .3),
+        .6em .2em .5em rgba(0, 0, 0, .3),
+        1.2em .4em .5em rgba(0, 0, 0, .3);
+        // transform: rotate(180deg);
+        background-color: #2a2a2a;
+        //  margin-left: 20%;
+   
+  }
+  
+  .select:active
+  {
+    box-shadow:
+    0 0 0 .15em hsla(0, 0%, 0%, .9), /* hole */
+    .1em .075em .5em rgba(0,0,0,.3);
+    margin-left: 10%;
+  }
+  
+  .fabButton
+  {
+    width: 64px;height: 64px;transform: rotate(90deg);
+  }
+  .rangeButton
+  {
+    width: 72px;height: 72px;transform: rotate(90deg);
+  }
+  
+  .container1{
+    display: flex;width: 100%;height: 100%;justify-content: space-between;
+  }
+  
+  .box1
+  {
+    height: 100%;width: 80%;  display: flex;flex-direction: column;justify-content: space-between;
+  }
+  
+  .labelNes
+  {
+    
+    height: 100%;width: 18%;background-color: #bbb;border-radius: 0 7px 7px 0; display: flex;justify-content:space-evenly;align-items: center;flex-direction: column;align-self: center;transform: rotate(180deg);
+  }
+  
+  .labelContainer
+  {
+    width: 10%;height: 100%;display: flex;justify-content: center;flex-direction: row;
+  }
+  .label
+  {
+    height: 33%;width: 100%; display: flex;justify-content:space-evenly;align-items: center;flex-direction: column;align-self: center;
+  }
+  
+  .labelJoystick
+  {
+    height: 30%;width: 17%; display: flex;justify-content:space-evenly;align-items: center;flex-direction: column;align-self: center;
+  }
+  
+  .degree
+  {
+    transform: rotate(90deg);font-size:20px;color: #1e2023;
+  }
+  
+  .container3
+  {
+    display: flex;justify-content: space-between;align-items: center;width: 100%;height: 100%;flex-direction: column;
+  }
+  .iconBox
+  {
+    width: 100%;height: 33%; display: flex;flex-direction: column;justify-content: space-around;align-items: center; margin-top: 15%;
+  }
+  .iconCheck
+  {
+    font-size: 60px;transform: rotate(90deg);margin-right: 15%;color:white;background-color: #29c467;border-radius: 10px;
+  }
+  .iconRestore
+  {
+    width:58px;height:58px; font-size: 60px;margin-right: 15%;background-color: #e0ac08;color:white;border-radius: 10px;display: flex;justify-content: center;align-items: center;
+  }
+  .iconBack
+  {
+    font-size: 60px;margin-right: 15%;background-color: #cf3c4f;color:white;border-radius: 10px;
+  }
+  
+  .rangeButtonContainer
+  {
+    width: 50%;height: 100%;display: flex;flex-direction: column;justify-content: space-between;align-items: flex-start;margin-left: 20%;
+  }

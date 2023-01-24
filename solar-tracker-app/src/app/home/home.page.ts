@@ -2,8 +2,9 @@ import { Component } from "@angular/core";
 import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
- 
-
+import { Router } from '@angular/router';
+import { Socket } from 'ngx-socket-io';
+import { NavController } from "@ionic/angular";
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -20,7 +21,7 @@ export class HomePage {
   data=[];
 
 
-  degree="23";
+  degree="-";
   weatherText="Sunny";
   weatherControl="sunny";
   textControl=1;
@@ -32,10 +33,13 @@ export class HomePage {
 
 
   
-  constructor(private fireDb:AngularFireDatabase) {
+  constructor(private fireDb:AngularFireDatabase,private router: Router, private socket: Socket,private nav:NavController) {
  
 
+
+
     document.body.setAttribute('color-theme','dark');
+    this.getRealTimeTemp();
     setTimeout(() => {
      this.lastDatacolor=document.getElementById('lastDataColor');
       
@@ -48,6 +52,19 @@ export class HomePage {
          this.getData();
     }, );
    
+  }
+
+  settings()
+  {
+    // this.router.navigate(['/settings']);
+    this.nav.navigateForward('settings');
+  }
+
+  getRealTimeTemp()
+  {
+    this.fireDb.database.ref('Temp').on('value',data=>{
+     this.degree=parseFloat(data.val()).toFixed(1);
+    });
   }
 
   _line=" ";
@@ -120,7 +137,7 @@ export class HomePage {
       console.log(this.data);
       // this.pageControl=1;
         this.myChart.hideLoading();
-        console.log(this.avgData);
+        // console.log(this.avgData);
         console.log(this.data.length);
         console.log(this._lastData);
 

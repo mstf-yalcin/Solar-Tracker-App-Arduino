@@ -11,6 +11,14 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
+  },
+  {
+    path: 'controller',
+    loadChildren: () => import('./pages/controller/controller.module').then( m => m.ControllerPageModule)
+  },
 ];
 
 @NgModule({

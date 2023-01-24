@@ -1,130 +1,261 @@
-
 #include <SoftwareSerial.h>
-#include <FirebaseArduino.h>
-#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-
-#define FIREBASE_HOST ""
-#define FIREBASE_AUTH ""
-#define WIFI_SSID ""
-#define WIFI_PASSWORD ""
+#include <Ticker.h>
+#include <Arduino.h>
 
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+
+#include <SocketIOclient.h>
+#include <Hash.h>
+
+#include <Firebase_ESP_Client.h>
+#include "addons/TokenHelper.h"
+#include "addons/RTDBHelper.h"
+
+
+#include <Adafruit_BMP085.h>
+
+Adafruit_BMP085 bmp;
+
+SoftwareSerial Node_SoftSerial(D7, D8);  //RX,TX
+
+int status = 1;
+StaticJsonDocument<128> readDoc;
+StaticJsonDocument<128> doc;
+
+Ticker ticker;
+
+
+// #include <WebSocketsClient.h>
+
+// #include <Servo.h>
+// Servo servoMotorX;
+// Servo servoMotorY;
+
+ESP8266WiFiMulti WiFiMulti;
+SocketIOclient socketIO;
+
+
+#define API_KEY "AIzaSyALnV_dJHRRyviwQQgtjl_ixoe91kSHdXg"
+
+#define DATABASE_URL "https://arduino-bd3b7-default-rtdb.europe-west1.firebasedatabase.app"
+
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+
+bool signupOK = false;
+
+#include <time.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-#include <time.h>
-
-
-// Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
 
-//D6 = Rx & D5 = Tx
-SoftwareSerial nodemcu(D6, D5);
 
+
+double voltage;
+int rain;
+int x;
+int y;
+
+#define USE_SERIAL Serial
+
+void socketIOEvent(socketIOmessageType_t type, uint8_t* payload, size_t length) {
+  switch (type) {
+    case sIOtype_DISCONNECT:
+      USE_SERIAL.printf("[IOc] Disconnected!\n");
+      break;
+    case sIOtype_CONNECT:
+      USE_SERIAL.printf("[IOc] Connected to url: %s\n", payload);
+
+      // join default namespace (no auto join in Socket.IO V3)
+      socketIO.send(sIOtype_CONNECT, "/");
+      break;
+    case sIOtype_EVENT:
+      {
+
+
+        USE_SERIAL.printf("[IOc] get event: %s\n", payload);
+
+        StaticJsonDocument<128> doc;
+        DeserializationError error = deserializeJson(doc, payload);
+
+        if (error) {
+          Serial.print(F("deserializeJson() failed: "));
+          Serial.println(error.f_str());
+          return;
+        }
+
+        const char* root_0 = doc[0];
+        JsonObject root_1 = doc[1];
+        int status = root_1["status"]; 
+        int x = root_1["x"];  
+        int y = root_1["y"];
+        sendData(status, x, y);
+
+      }
+
+      break;
+    case sIOtype_ACK:
+      USE_SERIAL.printf("[IOc] get ack: %u\n", length);
+      hexdump(payload, length);
+      break;
+    case sIOtype_ERROR:
+      USE_SERIAL.printf("[IOc] get error: %u\n", length);
+      hexdump(payload, length);
+      break;
+    case sIOtype_BINARY_EVENT:
+      USE_SERIAL.printf("[IOc] get binary: %u\n", length);
+      hexdump(payload, length);
+      break;
+    case sIOtype_BINARY_ACK:
+      USE_SERIAL.printf("[IOc] get binary ack: %u\n", length);
+      hexdump(payload, length);
+      break;
+  }
+}
 
 void setup() {
-  // Initialize Serial port
-  Serial.begin(9600);
-  nodemcu.begin(9600);
+  // USE_SERIAL.begin(921600);
+  USE_SERIAL.begin(115200);
 
+  Node_SoftSerial.begin(9600);
 
-  while (!Serial) continue;
+  // ticker.attach(5, sendData);
 
-  // Connect to Wi-Fi
-  Serial.print("Connecting....");
+  //Serial.setDebugOutput(true);
+  USE_SERIAL.setDebugOutput(true);
 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  USE_SERIAL.println();
+  USE_SERIAL.println();
+  USE_SERIAL.println();
+
+  for (uint8_t t = 4; t > 0; t--) {
+    USE_SERIAL.printf("[SETUP] BOOT WAIT %d...\n", t);
+    USE_SERIAL.flush();
+    delay(1000);
   }
 
+  if (WiFi.getMode() & WIFI_AP) {
+    WiFi.softAPdisconnect(true);
+  }
 
-  // Initialize a NTPClient to get time
-  timeClient.begin();
-  // GMT +1 = 3600
-  // GMT +8 = 28800
-  // GMT -1 = -3600
-  // GMT 0 = 0
-  timeClient.setTimeOffset(10800);
+  WiFiMulti.addAP("Mi 9T Pro", "Asdfghjk12");
 
-  delay(500);
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  while (WiFiMulti.run() != WL_CONNECTED) {
+    delay(100);
+  }
 
+  String ip = WiFi.localIP().toString();
+  USE_SERIAL.printf("[SETUP] WiFi Connected %s\n", ip.c_str());
 
+  timeClient.begin();               
+  timeClient.setTimeOffset(10800);  
+
+  bmp.begin();
+    config.api_key = API_KEY;
+
+  config.database_url = DATABASE_URL;
+
+  config.token_status_callback = tokenStatusCallback;
+
+  if (Firebase.signUp(&config, &auth, "", "")) {
+    Serial.println("Firebase conected.");
+    signupOK = true;
+  } else {
+    Serial.printf("%s\n", config.signer.signupError.message.c_str());
+  }
+
+  Firebase.begin(&config, &auth); 
+  Firebase.reconnectWiFi(true);
+
+  // server address, port and URL
+  socketIO.begin("4.231.20.86", 80, "/socket.io/?EIO=4");
+  socketIO.onEvent(socketIOEvent);
 }
 
+unsigned long messageTimestamp = 0;
 void loop() {
+  socketIO.loop();
+
+  if (Firebase.ready() && signupOK && Node_SoftSerial.available() > 0) {
+
+    DeserializationError error = deserializeJson(readDoc, Node_SoftSerial);
+
+    if (error == DeserializationError::Ok) {
+      voltage = readDoc["voltage"].as<double>();
+      rain = readDoc["rain"].as<int>();
+      x = readDoc["x"].as<int>();
+      y = readDoc["y"].as<int>();
+
+      Serial.print("voltage = ");
+      Serial.println(voltage);
+      Serial.print("rain = ");
+      Serial.println(rain);
+
+      sendFirebaseData(voltage, rain);
+      readDoc.clear();
+    }
+  }
+}
 
 
-  Serial.println("loop..");
+void sendFirebaseData(double voltage, int rain) {
+  FirebaseJson json;
+  json.add("date", getDate());
+  json.add("rain", rain);
+  json.add("volt", voltage);
 
-  StaticJsonBuffer<1000> jsonBuffer;
-  JsonObject& data = jsonBuffer.parseObject(nodemcu);
+  FirebaseJson jsonController;
+  int newX = abs((750 - x) / 8.5);
+  int newY = abs((750 - y) / 8.5);
 
-  if (data == JsonObject::invalid()) {
-    Serial.println("Invalid Json Object");
-    jsonBuffer.clear();
-    return;
+  jsonController.add("x", newX);
+  jsonController.add("y", newY);
+
+  Firebase.RTDB.setDouble(&fbdo, "/Temp", bmp.readTemperature());
+
+  if (Firebase.RTDB.pushJSON(&fbdo, "/data", &json)) {
+    Serial.println("Success");
+    Firebase.RTDB.updateNode(&fbdo, "/controller", &jsonController);
+
+  } else {
+    Serial.println("Error");
+    Serial.println("Error Code: " + fbdo.errorReason());
   }
 
+  String date = getDate();
+}
+
+String getDate() {
   timeClient.update();
 
-  unsigned long epochTime = timeClient.getEpochTime();
-  Serial.print("Epoch Time: ");
-  Serial.println(epochTime);
-
+  time_t epochTime = timeClient.getEpochTime();
   String formattedTime = timeClient.getFormattedTime();
-  Serial.print("Formatted Time: ");
-  Serial.println(formattedTime);
 
-
-  //Get a time structure
-  struct tm *ptm = gmtime ((time_t *)&epochTime);
-
+  struct tm* ptm = gmtime((time_t*)&epochTime);
   int monthDay = ptm->tm_mday;
-  Serial.print("Month day: ");
-  Serial.println(monthDay);
-
   int currentMonth = ptm->tm_mon + 1;
-  Serial.print("Month: ");
-  Serial.println(currentMonth);
-  
   int currentYear = ptm->tm_year + 1900;
-  Serial.print("Year: ");
-  Serial.println(currentYear);
 
-  //Print complete date:
-  String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay) + " " + String(formattedTime);
-  Serial.print("Current date: ");
-  Serial.println(currentDate);
+  String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay) + " " + formattedTime;
 
-
-  Serial.println("uno JSON Object Recieved");
-  Serial.print("Recieved vout:  ");
-  float voltage = data["voltage"];
-  Serial.println(voltage);
-  Serial.print("Recieved Temperature:  ");
-  int rain = data["rain"];
-  Serial.println(rain);
-
-  Serial.println("-----------------------------------------");
-
-  JsonObject& firebaseData = jsonBuffer.createObject();
-
-  firebaseData["date"] = currentDate;
-  firebaseData["volt"] = voltage;
-  firebaseData["rain"] = rain;
-
-  Firebase.push("data", firebaseData);
-
-  if (Firebase.failed()) {
-    Serial.print("pushing /logs failed:");
-    Serial.println(Firebase.error());
-    return;
-  }
-
-  delay(2000);
-
+  return currentDate;
 }
+
+void sendData(int status, int x, int y) {
+  doc["status"] = status;
+  doc["x"] = x;
+  doc["y"] = y;
+
+  serializeJson(doc, Node_SoftSerial);
+  doc.clear();
+}
+
+
+// void WriteServo(int x, int y) {
+//   servoMotorX.write(x);
+//   servoMotorY.write(y);
+// }

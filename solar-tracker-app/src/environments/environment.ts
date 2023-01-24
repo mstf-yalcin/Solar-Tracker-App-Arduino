@@ -3,10 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  firebaseConfig : {
- //your firebase config
- }
+  production: true,
+  firebaseConfig: {
+    apiKey: "AIzaSyALnV_dJHRRyviwQQgtjl_ixoe91kSHdXg",
+    authDomain: "arduino-bd3b7.firebaseapp.com",
+    databaseURL: "https://arduino-bd3b7-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "arduino-bd3b7",
+    storageBucket: "arduino-bd3b7.appspot.com",
+    messagingSenderId: "919971148540",
+    appId: "1:919971148540:web:997e43d6abbe8640679d79",
+    measurementId: "G-TYSM4036C1"
+  }
 };
 
 /*

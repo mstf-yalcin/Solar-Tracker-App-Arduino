@@ -1,5 +1,5 @@
 {
-  "name": "solar-tracker",
+  "name": "solar-tracker-controller",
   "integrations": {
     "capacitor": {}
   },
